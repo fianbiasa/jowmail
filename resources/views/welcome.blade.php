@@ -53,7 +53,7 @@
     <div class="content">
         <h2>Bangun dan kirim campaign email dengan mudah</h2>
         <p>Gunakan kekuatan email marketing untuk menjangkau pelanggan Anda. Lacak open rate, atur jadwal pengiriman, dan kirim secara personal dengan mudah.</p>
-        <a href="{{ url('/login') }}" class="button">Masuk ke Panel</a>
+        <a href="{{ url('/') }}" class="button">Masuk ke Panel</a>
     </div>
 
     <footer>
