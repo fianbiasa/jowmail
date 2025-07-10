@@ -3,40 +3,38 @@
 namespace App\Filament\Resources\EmailListResource\RelationManagers;
 
 use Filament\Forms;
+use Filament\Forms\Form;
 use Filament\Tables;
+use Filament\Tables\Table;
+use App\Models\Subscriber;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\TextColumn;
 
-class SubscribersRelationManager extends RelationManager
+class SubscriberRelationManager extends RelationManager
 {
     protected static string $relationship = 'subscribers';
+    protected static ?string $title = 'Subscribers';
 
-    public function form(Forms\Form $form): Forms\Form
+    public function form(Form $form): Form
     {
         return $form->schema([
-            TextInput::make('name')->label('Name'),
-            TextInput::make('email')->email()->required(),
+            Forms\Components\TextInput::make('name')->required(),
+            Forms\Components\TextInput::make('email')->email()->required(),
         ]);
     }
 
-    public function table(Tables\Table $table): Tables\Table
+    public function table(Table $table): Table
     {
-        return $table->columns([
-            TextColumn::make('name')->searchable(),
-            TextColumn::make('email')->searchable(),
-            TextColumn::make('created_at')->dateTime('d M Y H:i'),
-        ])
-        ->filters([])
-        ->headerActions([
-            Tables\Actions\CreateAction::make(),
-        ])
-        ->actions([
-            Tables\Actions\EditAction::make(),
-            Tables\Actions\DeleteAction::make(),
-        ])
-        ->bulkActions([
-            Tables\Actions\DeleteBulkAction::make(),
-        ]);
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('name')->searchable(),
+                Tables\Columns\TextColumn::make('email')->searchable(),
+            ])
+            ->headerActions([
+                Tables\Actions\CreateAction::make(),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ]);
     }
 }
