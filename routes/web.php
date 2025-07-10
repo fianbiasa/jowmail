@@ -24,7 +24,8 @@ Route::get('/waktu', function () {
 });
 Route::get('/track/open/{campaignId}/{subscriberId}.png', [TrackingController::class, 'open'])
     ->name('track.open');
-    
+
+Route::get('/tracking/open/{campaign}/{subscriber}', [TrackingController::class, 'open'])->name('tracking.open');    
 Route::get('/tracking/open/{campaign}/{subscriber}', function ($campaignId, $subscriberId) {
     $campaign = Campaign::findOrFail($campaignId);
     $subscriber = Subscriber::findOrFail($subscriberId);
