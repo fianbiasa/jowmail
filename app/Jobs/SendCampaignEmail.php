@@ -48,16 +48,17 @@ class SendCampaignEmail implements ShouldQueue
 
         try {
             foreach ($subscribers as $subscriber) {
-                $trackingUrl = config('app.url') . "/tracking/open/{$this->campaign->id}/{$subscriber->id}";
-                $bodyWithPixel = $this->campaign->body;
-                $bodyWithPixel .= '<img src="' . $trackingUrl . '" width="1" height="1" style="display:none;" />';
+            $trackingUrl = route('tracking.open', [$this->campaign->id, $subscriber->id]);
+            $bodyWithPixel = $this->campaign->body;
+            $bodyWithPixel .= '<img src="' . $trackingUrl . '" width="1" height="1" style="display:none;" />';
 
-                Mail::html($bodyWithPixel, function ($msg) use ($subscriber, $smtp, $campaign) {
-                    $msg->to($subscriber->email)
-                        ->from($smtp->from_address, $smtp->from_name)
-                        ->subject($campaign->subject);
-                });
-            }
+            Mail::html($bodyWithPixel, function ($msg) use ($subscriber, $smtp, $campaign) {
+                $msg->to($subscriber->email)
+                    ->from($smtp->from_address, $smtp->from_name)
+                    ->subject($campaign->subject);
+            });
+        }
+
 
             $campaign->update(['status' => 'sent']);
         } catch (\Exception $e) {
