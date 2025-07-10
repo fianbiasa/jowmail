@@ -44,23 +44,24 @@ class SendCampaignEmail implements ShouldQueue
         ]);
 
         $subscribers = $this->campaign->emailList->subscribers;
+        $campaign = $this->campaign; // simpan agar bisa diakses dalam closure
 
         try {
             foreach ($subscribers as $subscriber) {
-                $trackingUrl = route('tracking.open', [$this->campaign->id, $subscriber->id]);
-                $bodyWithPixel = $this->campaign->body;
+                $trackingUrl = route('tracking.open', [$campaign->id, $subscriber->id]);
+                $bodyWithPixel = $campaign->body;
                 $bodyWithPixel .= '<img src="' . $trackingUrl . '" width="1" height="1" style="display:none;" />';
 
-                Mail::html($bodyWithPixel, function ($msg) use ($subscriber, $smtp) {
+                Mail::html($bodyWithPixel, function ($msg) use ($subscriber, $smtp, $campaign) {
                     $msg->to($subscriber->email)
                         ->from($smtp->from_address, $smtp->from_name)
-                        ->subject($msg->subject ?? ''); // pastikan subject tidak null
+                        ->subject($campaign->subject);
                 });
             }
 
-            $this->campaign->update(['status' => 'sent']);
+            $campaign->update(['status' => 'sent']);
         } catch (\Exception $e) {
-            $this->campaign->update(['status' => 'failed']);
+            $campaign->update(['status' => 'failed']);
             Log::error('Campaign send failed: ' . $e->getMessage());
         }
     }
