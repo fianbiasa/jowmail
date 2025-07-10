@@ -9,7 +9,14 @@ class Campaign extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['subject', 'body', 'smtp_account_id', 'email_list_id', 'status'];
+    protected $fillable = [
+    'subject',
+    'body',
+    'smtp_account_id',
+    'email_list_id',
+    'status',
+    'scheduled_at',
+];
 
     public function smtpAccount()
     {
