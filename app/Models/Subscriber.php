@@ -14,4 +14,8 @@ class Subscriber extends Model
     {
         return $this->belongsTo(EmailList::class, 'email_list_id');
     }
+    public function emailList()
+{
+    return $this->belongsTo(EmailList::class);
+}
 }
