@@ -48,8 +48,8 @@ class SendCampaignEmail implements ShouldQueue
 
         try {
             foreach ($subscribers as $subscriber) {
-                $trackingUrl = route('tracking.open', [$campaign->id, $subscriber->id]);
-                $bodyWithPixel = $campaign->body;
+                $trackingUrl = config('app.url') . "/tracking/open/{$this->campaign->id}/{$subscriber->id}";
+                $bodyWithPixel = $this->campaign->body;
                 $bodyWithPixel .= '<img src="' . $trackingUrl . '" width="1" height="1" style="display:none;" />';
 
                 Mail::html($bodyWithPixel, function ($msg) use ($subscriber, $smtp, $campaign) {
