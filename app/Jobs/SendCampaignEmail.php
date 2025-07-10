@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Jobs;
+
+use App\Models\Campaign;
+use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+
+class SendCampaignEmail implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $campaign;
+
+    public function __construct(Campaign $campaign)
+    {
+        $this->campaign = $campaign;
+    }
+
+    public function handle()
+    {
+        $smtp = $this->campaign->smtpAccount;
+
+        config([
+            'mail.mailers.dynamic' => [
+                'transport' => 'smtp',
+                'host' => $smtp->host,
+                'port' => $smtp->port,
+                'encryption' => $smtp->encryption,
+                'username' => $smtp->username,
+                'password' => $smtp->password,
+            ],
+            'mail.default' => 'dynamic',
+        ]);
+
+        $subscribers = $this->campaign->emailList?->subscribers ?? [];
+
+        try {
+            foreach ($subscribers as $subscriber) {
+                Mail::raw(strip_tags($this->campaign->body), function ($msg) use ($subscriber) {
+                    $msg->to($subscriber->email)
+                        ->subject($this->campaign->subject);
+                });
+            }
+
+            $this->campaign->update(['status' => 'sent']);
+        } catch (\Exception $e) {
+            $this->campaign->update(['status' => 'failed']);
+            Log::error('Campaign send failed: '.$e->getMessage());
+        }
+    }
+}
