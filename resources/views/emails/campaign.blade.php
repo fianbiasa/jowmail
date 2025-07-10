@@ -12,17 +12,17 @@
         <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:6px;overflow:hidden;">
           <tr>
             <td style="background-color:#2d89ef;padding:20px;color:#ffffff;text-align:center;font-size:24px;font-weight:bold;">
-              Jowmail App
+              
             </td>
           </tr>
           <tr>
             <td style="padding:30px 20px;color:#333333;font-size:16px;line-height:1.5;">
               {!! $body !!}
             </td>
-          </tr>
+          </tr><br><br>
           <tr>
             <td style="padding:20px;text-align:center;">
-              <a href="https://jowmail.com/admin" style="background-color:#2d89ef;color:#ffffff;padding:12px 20px;text-decoration:none;border-radius:4px;font-weight:bold;">Masuk ke Akun</a>
+              
             </td>
           </tr>
           <tr>
