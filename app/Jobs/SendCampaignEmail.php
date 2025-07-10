@@ -47,10 +47,11 @@ class SendCampaignEmail implements ShouldQueue
 
     try {
         foreach ($subscribers as $subscriber) {
-            Mail::raw(strip_tags($this->campaign->body), function ($msg) use ($subscriber) {
-                $msg->to($subscriber->email)
-                    ->subject($this->campaign->subject);
-            });
+            Mail::raw(strip_tags($this->campaign->body), function ($msg) use ($subscriber, $smtp) {
+    $msg->to($subscriber->email)
+        ->from($smtp->from_address, $smtp->from_name)
+        ->subject($this->campaign->subject);
+});
         }
 
         $this->campaign->update(['status' => 'sent']);
