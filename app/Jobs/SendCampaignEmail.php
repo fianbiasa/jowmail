@@ -10,7 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
 
 class SendCampaignEmail implements ShouldQueue
 {
@@ -26,8 +26,7 @@ class SendCampaignEmail implements ShouldQueue
     public function handle()
     {
         if ($this->campaign->scheduled_at && now()->lt($this->campaign->scheduled_at)) {
-            // Belum waktunya kirim
-            return;
+            return; // belum waktunya kirim
         }
 
         $smtp = $this->campaign->smtpAccount;
@@ -45,35 +44,41 @@ class SendCampaignEmail implements ShouldQueue
         ]);
 
         $subscribers = $this->campaign->emailList->subscribers;
-        $campaign = $this->campaign; // simpan agar bisa diakses dalam closure
 
         try {
             foreach ($subscribers as $subscriber) {
-    $trackingUrl = route('tracking.open', [$this->campaign->id, $subscriber->id]);
+                $trackingUrl = route('tracking.open', [$this->campaign->id, $subscriber->id]);
 
-    $bodyWithPixel = str_replace(
-        ['{{name}}', '{{email}}'],
-        [$subscriber->name, $subscriber->email],
-        $this->campaign->body
-    );
-    $bodyWithPixel .= '<img src="' . $trackingUrl . '" width="1" height="1" style="display:none;" />';
+                // Replace tag di body
+                $bodyWithPixel = str_replace(
+                    ['{{name}}', '{{email}}'],
+                    [$subscriber->name, $subscriber->email],
+                    $this->campaign->body
+                );
+                $bodyWithPixel .= '<img src="' . $trackingUrl . '" width="1" height="1" style="display:none;" />';
 
-    $html = view('emails.campaign', [
-        'subject' => $this->campaign->subject,
-        'body' => $bodyWithPixel,
-    ])->render();
+                // Replace tag di subject
+                $subject = strtr($this->campaign->subject, [
+                    '{{name}}' => $subscriber->name,
+                    '{{email}}' => $subscriber->email,
+                ]);
 
-    Mail::html($html, function ($msg) use ($subscriber, $smtp, $campaign) {
-        $msg->to($subscriber->email)
-            ->from($smtp->from_address, $smtp->from_name)
-            ->subject($campaign->subject);
-    });
-}
+                // Render final email HTML
+                $html = view('emails.campaign', [
+                    'subject' => $subject,
+                    'body' => $bodyWithPixel,
+                ])->render();
 
+                Mail::html($html, function ($msg) use ($subscriber, $smtp, $subject) {
+                    $msg->to($subscriber->email)
+                        ->from($smtp->from_address, $smtp->from_name)
+                        ->subject($subject);
+                });
+            }
 
-            $campaign->update(['status' => 'sent']);
+            $this->campaign->update(['status' => 'sent']);
         } catch (\Exception $e) {
-            $campaign->update(['status' => 'failed']);
+            $this->campaign->update(['status' => 'failed']);
             Log::error('Campaign send failed: ' . $e->getMessage());
         }
     }
