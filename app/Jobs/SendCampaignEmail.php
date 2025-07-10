@@ -49,7 +49,11 @@ class SendCampaignEmail implements ShouldQueue
         try {
             foreach ($subscribers as $subscriber) {
             $trackingUrl = url("/tracking/open/{$this->campaign->id}/{$subscriber->id}.gif");
-            $bodyWithPixel = $this->campaign->body;
+            $bodyWithPixel = str_replace(
+    ['{{name}}', '{{email}}'],
+    [$subscriber->name, $subscriber->email],
+    $this->campaign->body
+);
             $bodyWithPixel .= '<img src="' . $trackingUrl . '" width="1" height="1" style="display:none;" />';
 
             Mail::html($bodyWithPixel, function ($msg) use ($subscriber, $smtp, $campaign) {
