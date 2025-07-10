@@ -27,7 +27,7 @@
           </tr>
           <tr>
             <td style="padding:20px;text-align:center;font-size:12px;color:#888888;">
-              Anda menerima email ini karena mendaftar di <a href="https://jowmail.com/" style="color:#2d89ef;text-decoration:none;">jowmail.com</a>.
+              Anda menerima email ini karena tercatat sebagai salah satu member dari kelas yang saya miliki, atau subscribe di freebies saya.<br>dan kemudian saya import ke system baru saya yang bernama <a href="https://jowmail.com/" style="color:#2d89ef;text-decoration:none;">jowmail.com</a>.
               <br>Jika ini bukan Anda, abaikan saja email ini.
             </td>
           </tr>
