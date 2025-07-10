@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TrackingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,3 +20,5 @@ Route::get('/', function () {
 Route::get('/waktu', function () {
     return now()->toDateTimeString();
 });
+Route::get('/track/open/{campaignId}/{subscriberId}.png', [TrackingController::class, 'open'])
+    ->name('track.open');
