@@ -14,6 +14,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\BadgeColumn;
+use Filament\Forms\Components\DateTimePicker;
 
 class CampaignResource extends Resource
 {
@@ -25,17 +26,22 @@ class CampaignResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            TextInput::make('subject')->required(),
-            Textarea::make('body')->label('Email Content')->rows(8)->required(),
-            Select::make('smtp_account_id')
-                ->label('SMTP Account')
-                ->relationship('smtpAccount', 'name')
-                ->required(),
-            Select::make('email_list_id')
-                ->label('Email List')
-                ->relationship('emailList', 'name')
-                ->required(),
-        ]);
+        TextInput::make('subject')->required(),
+        Textarea::make('body')->label('Email Content')->rows(8)->required(),
+        Select::make('smtp_account_id')
+            ->label('SMTP Account')
+            ->relationship('smtpAccount', 'name')
+            ->required(),
+        Select::make('email_list_id')
+            ->label('Email List')
+            ->relationship('emailList', 'name')
+            ->required(),
+        DateTimePicker::make('scheduled_at')
+            ->label('Schedule Send Time')
+            ->nullable()
+            ->default(now())
+            ->seconds(false),
+    ]);
     }
 
     public static function table(Table $table): Table
