@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TrackingController;
+use App\Models\Campaign;
+use App\Models\Subscriber;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,3 +24,21 @@ Route::get('/waktu', function () {
 });
 Route::get('/track/open/{campaignId}/{subscriberId}.png', [TrackingController::class, 'open'])
     ->name('track.open');
+    
+Route::get('/tracking/open/{campaign}/{subscriber}', function ($campaignId, $subscriberId) {
+    $campaign = Campaign::findOrFail($campaignId);
+    $subscriber = Subscriber::findOrFail($subscriberId);
+
+    // Update opens
+    $subscriber->increment('opens');
+
+    // Return 1x1 transparent GIF
+    return response(base64_decode(
+        'R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='
+    ), 200, [
+        'Content-Type' => 'image/gif',
+        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+        'Pragma' => 'no-cache',
+        'Expires' => '0',
+    ]);
+});
