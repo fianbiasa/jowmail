@@ -17,38 +17,34 @@ class SubscriberResource extends Resource
 {
     protected static ?string $model = Subscriber::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?string $navigationLabel = 'Subscribers';
-    protected static ?string $navigationGroup = 'Subscribers';
 
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Select::make('email_list_id')
-                ->relationship('list', 'name')
-                ->label('Email List')
-                ->required(),
-
-            TextInput::make('name')->label('Name'),
             TextInput::make('email')->email()->required(),
+            TextInput::make('name')->label('Subscriber Name')->required(),
+            Select::make('email_list_id')
+                ->label('Email List')
+                ->relationship('emailList', 'name')
+                ->required(),
         ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('name')->searchable()->sortable(),
-                TextColumn::make('email')->searchable()->sortable(),
-                TextColumn::make('list.name')->label('List'),
-                TextColumn::make('created_at')->dateTime('d M Y H:i'),
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]);
+        return $table->columns([
+            TextColumn::make('name')->sortable()->searchable(),
+            TextColumn::make('email')->sortable()->searchable(),
+            TextColumn::make('emailList.name')->label('List'),
+        ])
+        ->actions([
+            Tables\Actions\EditAction::make(),
+        ])
+        ->bulkActions([
+            Tables\Actions\DeleteBulkAction::make(),
+        ]);
     }
 
     public static function getPages(): array

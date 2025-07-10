@@ -1,21 +1,24 @@
-<?
+<?php
 
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CampaignResource\Pages;
 use App\Models\Campaign;
+use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
+use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Resources\Resource;
-
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\BadgeColumn;
 
 class CampaignResource extends Resource
 {
     protected static ?string $model = Campaign::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
     protected static ?string $navigationLabel = 'Campaigns';
 
@@ -37,19 +40,22 @@ class CampaignResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('subject')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('smtpAccount.name')->label('SMTP'),
-                Tables\Columns\TextColumn::make('emailList.name')->label('Email List'),
-                Tables\Columns\BadgeColumn::make('status')->colors([
-                    'success' => 'sent',
-                    'danger' => 'failed',
-                    'gray' => 'draft',
-                ]),
-            ])
-            ->actions([Tables\Actions\EditAction::make()])
-            ->bulkActions([Tables\Actions\DeleteBulkAction::make()]);
+        return $table->columns([
+            TextColumn::make('subject')->sortable()->searchable(),
+            TextColumn::make('smtpAccount.name')->label('SMTP'),
+            TextColumn::make('emailList.name')->label('Email List'),
+            BadgeColumn::make('status')->colors([
+                'success' => 'sent',
+                'danger' => 'failed',
+                'gray' => 'draft',
+            ]),
+        ])
+        ->actions([
+            Tables\Actions\EditAction::make(),
+        ])
+        ->bulkActions([
+            Tables\Actions\DeleteBulkAction::make(),
+        ]);
     }
 
     public static function getPages(): array

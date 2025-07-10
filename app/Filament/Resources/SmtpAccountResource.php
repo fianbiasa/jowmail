@@ -6,85 +6,52 @@ use App\Filament\Resources\SmtpAccountResource\Pages;
 use App\Models\SmtpAccount;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Tables\Columns\{TextColumn, BooleanColumn};
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
 
 class SmtpAccountResource extends Resource
 {
     protected static ?string $model = SmtpAccount::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
-    protected static ?string $navigationLabel = 'SMTP';
-    protected static ?string $pluralModelLabel = 'SMTP Accounts';
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $navigationIcon = 'heroicon-o-server-stack';
+    protected static ?string $navigationLabel = 'SMTP Accounts';
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                TextInput::make('name')
-                    ->label('Nama SMTP')
-                    ->required(),
-
-                TextInput::make('host')
-                    ->required(),
-
-                TextInput::make('port')
-                    ->numeric()
-                    ->required(),
-
-                TextInput::make('username')
-                    ->required(),
-
-                TextInput::make('password')
-                    ->password()
-                    ->revealable()
-                    ->required(),
-
-                TextInput::make('encryption')
-                    ->label('Encryption (tls/ssl)')
-                    ->default('tls'),
-
-                Toggle::make('is_active')
-                    ->label('Aktif')
-                    ->default(true),
-            ]);
+        return $form->schema([
+            TextInput::make('name')->required(),
+            TextInput::make('host')->required(),
+            TextInput::make('port')->numeric()->required(),
+            Select::make('encryption')
+                ->options([
+                    'tls' => 'TLS',
+                    'ssl' => 'SSL',
+                    'null' => 'None',
+                ])
+                ->required(),
+            TextInput::make('username')->required(),
+            TextInput::make('password')->password()->required(),
+        ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('name')->label('SMTP Name')->searchable(),
-                TextColumn::make('host'),
-                TextColumn::make('port'),
-                TextColumn::make('username'),
-                TextColumn::make('encryption'),
-                BooleanColumn::make('is_active')
-                ->label('Aktif'),
-                TextColumn::make('created_at')->dateTime('d M Y H:i'),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [];
+        return $table->columns([
+            TextColumn::make('name')->sortable()->searchable(),
+            TextColumn::make('host'),
+            TextColumn::make('port'),
+            TextColumn::make('encryption'),
+        ])
+        ->actions([
+            Tables\Actions\EditAction::make(),
+        ])
+        ->bulkActions([
+            Tables\Actions\DeleteBulkAction::make(),
+        ]);
     }
 
     public static function getPages(): array
