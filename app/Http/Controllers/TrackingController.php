@@ -10,27 +10,30 @@ class TrackingController extends Controller
 {
     public function open($campaignId, $subscriberId)
     {
-        // Simpan ke campaign_opens
-        DB::table('campaign_opens')->updateOrInsert(
-            [
-                'campaign_id' => $campaignId,
-                'subscriber_id' => $subscriberId,
-            ],
-            [
-                'opened_at' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        );
+    // Cek apakah sudah tercatat sebelumnya
+    $exists = \DB::table('campaign_opens')
+        ->where('campaign_id', $campaignId)
+        ->where('subscriber_id', $subscriberId)
+        ->exists();
 
-        // Return 1x1 transparent GIF
-        $pixel = base64_decode('R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==');
-
-        return Response::make($pixel, 200, [
-            'Content-Type' => 'image/gif',
-            'Cache-Control' => 'no-cache, no-store, must-revalidate',
-            'Pragma' => 'no-cache',
-            'Expires' => '0',
+    if (! $exists) {
+        \DB::table('campaign_opens')->insert([
+            'campaign_id' => $campaignId,
+            'subscriber_id' => $subscriberId,
+            'opened_at' => now(),
         ]);
+        \Log::info("Open tracked: Campaign $campaignId, Subscriber $subscriberId");
+    }
+
+    // Kirim 1x1 GIF transparan agar client tidak error
+    $gif = base64_decode(
+        'R0lGODlhAQABAPAAAAAAAAAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=='
+    );
+
+    return response($gif)
+        ->header('Content-Type', 'image/gif')
+        ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+        ->header('Pragma', 'no-cache')
+        ->header('Expires', '0');
     }
 }
