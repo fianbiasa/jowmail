@@ -35,6 +35,8 @@ class SmtpAccountResource extends Resource
                 ->required(),
             TextInput::make('username')->required(),
             TextInput::make('password')->password()->required(),
+            TextInput::make('from_name')->label('Sender Name')->required(),
+            TextInput::make('from_address')->label('Sender Email')->email()->required(),
         ]);
     }
 
@@ -45,6 +47,8 @@ class SmtpAccountResource extends Resource
             TextColumn::make('host'),
             TextColumn::make('port'),
             TextColumn::make('encryption'),
+            TextColumn::make('from_name')->label('Sender Name'),
+            TextColumn::make('from_address')->label('Sender Email'),
         ])
         ->actions([
             Tables\Actions\EditAction::make(),
