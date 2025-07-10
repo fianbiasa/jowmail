@@ -48,7 +48,7 @@ class SendCampaignEmail implements ShouldQueue
 
         try {
             foreach ($subscribers as $subscriber) {
-            $trackingUrl = route('tracking.open', [$this->campaign->id, $subscriber->id]);
+            $trackingUrl = route('tracking.open', [$this->campaign->id, $subscriber->id], false);
             $bodyWithPixel = $this->campaign->body;
             $bodyWithPixel .= '<img src="' . $trackingUrl . '" width="1" height="1" style="display:none;" />';
 
