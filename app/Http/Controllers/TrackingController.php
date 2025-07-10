@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Campaign;
-use App\Models\Subscriber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
@@ -12,7 +10,7 @@ class TrackingController extends Controller
 {
     public function open($campaignId, $subscriberId)
     {
-        // Simpan log ke tabel pivot atau log terbuka
+        // Simpan ke campaign_opens
         DB::table('campaign_opens')->updateOrInsert(
             [
                 'campaign_id' => $campaignId,
@@ -20,13 +18,13 @@ class TrackingController extends Controller
             ],
             [
                 'opened_at' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
             ]
         );
 
-        // Kembalikan 1x1 transparent pixel
-        $pixel = base64_decode(
-            'R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==' // GIF 1x1 pixel
-        );
+        // Return 1x1 transparent GIF
+        $pixel = base64_decode('R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==');
 
         return Response::make($pixel, 200, [
             'Content-Type' => 'image/gif',
