@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\View;
 
 class SendCampaignEmail implements ShouldQueue
 {
@@ -48,20 +49,26 @@ class SendCampaignEmail implements ShouldQueue
 
         try {
             foreach ($subscribers as $subscriber) {
-            $trackingUrl = url("/tracking/open/{$this->campaign->id}/{$subscriber->id}.gif");
-            $bodyWithPixel = str_replace(
-    ['{{name}}', '{{email}}'],
-    [$subscriber->name, $subscriber->email],
-    $this->campaign->body
-);
-            $bodyWithPixel .= '<img src="' . $trackingUrl . '" width="1" height="1" style="display:none;" />';
+    $trackingUrl = route('tracking.open', [$this->campaign->id, $subscriber->id]);
 
-            Mail::html($bodyWithPixel, function ($msg) use ($subscriber, $smtp, $campaign) {
-                $msg->to($subscriber->email)
-                    ->from($smtp->from_address, $smtp->from_name)
-                    ->subject($campaign->subject);
-            });
-        }
+    $bodyWithPixel = str_replace(
+        ['{{name}}', '{{email}}'],
+        [$subscriber->name, $subscriber->email],
+        $this->campaign->body
+    );
+    $bodyWithPixel .= '<img src="' . $trackingUrl . '" width="1" height="1" style="display:none;" />';
+
+    $html = view('emails.campaign', [
+        'subject' => $this->campaign->subject,
+        'body' => $bodyWithPixel,
+    ])->render();
+
+    Mail::html($html, function ($msg) use ($subscriber, $smtp, $campaign) {
+        $msg->to($subscriber->email)
+            ->from($smtp->from_address, $smtp->from_name)
+            ->subject($campaign->subject);
+    });
+}
 
 
             $campaign->update(['status' => 'sent']);
