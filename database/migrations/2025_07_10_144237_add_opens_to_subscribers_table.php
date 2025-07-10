@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('subscribers', function (Blueprint $table) {
-            //
-        });
+    $table->unsignedInteger('opens')->default(0);
+});
+
     }
 
     /**
