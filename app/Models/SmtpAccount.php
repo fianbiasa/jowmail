@@ -17,5 +17,7 @@ class SmtpAccount extends Model
         'password',
         'encryption',
         'is_active',
+        'from_name',       // ✅ Tambahkan ini
+        'from_address',    // ✅ Tambahkan ini
     ];
 }
