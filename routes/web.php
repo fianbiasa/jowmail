@@ -22,3 +22,4 @@ Route::get('/', function () {
 
 Route::get('/tracking/open/{campaign}/{subscriber}.gif', [TrackingController::class, 'open'])
     ->name('tracking.open');
+Route::get('/redirect.php', [\App\Http\Controllers\TrackingController::class, 'redirect'])->name('tracking.redirect');
