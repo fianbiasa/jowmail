@@ -55,7 +55,8 @@ class SendCampaignEmail implements ShouldQueue
 
                 // Tambahkan tracking open (pixel)
                 $trackingUrl = route('tracking.open', [$this->campaign->id, $subscriber->id]);
-
+                $unsubscribeUrl = route('unsubscribe', ['subscriber' => $subscriber->id]);
+                
                 // Ganti tag di body
                 $body = str_replace(
                     ['{{name}}', '{{email}}'],
@@ -83,6 +84,7 @@ class SendCampaignEmail implements ShouldQueue
                 $html = view('emails.campaign', [
                     'subject' => $subject,
                     'body' => $body,
+                    'unsubscribeUrl' => $unsubscribeUrl, // <== Tambahkan ini
                 ])->render();
 
                 Mail::mailer('dynamic')->html($html, function ($msg) use ($subscriber, $smtp, $subject) {
