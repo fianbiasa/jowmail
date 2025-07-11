@@ -37,11 +37,14 @@
           @isset($unsubscribeUrl)
           <tr>
             <td style="padding:20px;text-align:center;font-size:12px;color:#888888;">
-              Anda menerima email ini karena tercatat sebagai salah satu member dari kelas yang saya miliki, atau subscribe di freebies saya.<br><br>
-              Dan kemudian saya import ke sistem baru saya yang bernama <a href="https://jowmail.com/" style="color:#2d89ef;text-decoration:none;">jowmail.com</a>.<br>
-              Jika ini bukan Anda, abaikan saja email ini.<br><br>
-               Jika kamu tidak ingin menerima email lagi dari kami,<br>
-              <a href="{{ $unsubscribeUrl }}" style="color:#d9534f;text-decoration:underline;">klik di sini untuk unsubscribe</a>.
+              <p style="margin-bottom:10px;">Anda menerima email ini karena tercatat sebagai salah satu member dari kelas yang saya miliki, atau subscribe di freebies saya.</p>
+              <p style="margin-bottom:10px;">Dan kemudian saya import ke sistem baru saya yang bernama <a href="https://jowmail.com/" style="color:#2d89ef;text-decoration:none;">jowmail.com</a>.</p>
+              <p style="margin-bottom:10px;">Jika ini bukan Anda, abaikan saja email ini.</p>
+               <p>Jika kamu tidak ingin menerima email lagi dari kami,<br>
+<a href="{{ $unsubscribeUrl }}" style="color:#d9534f;text-decoration:underline;">klik di sini untuk unsubscribe</a>.</p>
+              
+
+
             </td>
           </tr>
            @endisset
