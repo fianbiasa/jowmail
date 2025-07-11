@@ -9,7 +9,11 @@ use App\Filament\Widgets\ClickOpenPie;
 
 
 class Dashboard extends BaseDashboard
+{   
+    public static function shouldRegisterNavigation(): bool
 {
+    return false; // nonaktifkan menu dashboard default
+}
     protected function getHeaderWidgets(): array
     {
         return [
