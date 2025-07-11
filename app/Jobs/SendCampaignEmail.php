@@ -47,23 +47,42 @@ class SendCampaignEmail implements ShouldQueue
 
         try {
             foreach ($subscribers as $subscriber) {
-                $trackingUrl = route('tracking.open', [$this->campaign->id, $subscriber->id]);
-
-                $bodyWithPixel = str_replace(
-                    ['{{name}}', '{{email}}'],
-                    [$subscriber->name, $subscriber->email],
-                    $this->campaign->body
-                );
-                $bodyWithPixel .= '<img src="' . $trackingUrl . '" width="1" height="1" style="display:none;" />';
-
+                // Ganti tag di subject
                 $subject = strtr($this->campaign->subject, [
                     '{{name}}' => $subscriber->name,
                     '{{email}}' => $subscriber->email,
                 ]);
 
+                // Tambahkan tracking open (pixel)
+                $trackingUrl = route('tracking.open', [$this->campaign->id, $subscriber->id]);
+
+                // Ganti tag di body
+                $body = str_replace(
+                    ['{{name}}', '{{email}}'],
+                    [$subscriber->name, $subscriber->email],
+                    $this->campaign->body
+                );
+
+                // Tambahkan tracking click (ubah semua href jadi tracking)
+                $body = preg_replace_callback('/href="(https?:\/\/[^"]+)"/i', function ($matches) use ($subscriber) {
+                    $originalUrl = $matches[1];
+                    $encodedId = base64_encode(Str::random(10) . '.' . $subscriber->id . '.' . $this->campaign->id);
+                    $encodedUrl = urlencode(base64_encode($originalUrl));
+                    $redirectUrl = url('/redirect.php') . '?id=' . $encodedId . '&ref=' . $encodedUrl;
+                    return 'href="' . $redirectUrl . '"';
+                }, $body);
+
+                // Tambahkan tracking pixel
+                $body .= '<img src="' . $trackingUrl . '" width="1" height="1" style="display:none;" />';
+
+                // Tambahkan link unsubscribe
+                $unsubscribeUrl = route('unsubscribe', $subscriber->id);
+                $body .= '<br><p style="font-size: 12px; color: gray;">To unsubscribe, <a href="' . $unsubscribeUrl . '">click here</a>.</p>';
+
+                // Render final HTML email
                 $html = view('emails.campaign', [
                     'subject' => $subject,
-                    'body' => $bodyWithPixel,
+                    'body' => $body,
                 ])->render();
 
                 Mail::mailer('dynamic')->html($html, function ($msg) use ($subscriber, $smtp, $subject) {
