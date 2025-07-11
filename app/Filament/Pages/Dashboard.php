@@ -4,6 +4,9 @@ namespace App\Filament\Pages;
 
 use Filament\Pages\Dashboard as BaseDashboard;
 use App\Filament\Widgets\StatsOverview;
+use App\Filament\Widgets\CampaignChart;
+use App\Filament\Widgets\ClickOpenPie;
+
 
 class Dashboard extends BaseDashboard
 {
@@ -13,4 +16,11 @@ class Dashboard extends BaseDashboard
             StatsOverview::class,
         ];
     }
+    protected function getFooterWidgets(): array
+{
+    return [
+        ClickOpenPie::class,
+        CampaignChart::class,
+    ];
+}
 }
