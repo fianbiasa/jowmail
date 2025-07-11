@@ -75,7 +75,7 @@ class SendCampaignEmail implements ShouldQueue
                     $headers->addTextHeader('X-Campaign-ID', $this->campaign->id);
                     $headers->addTextHeader('X-Subscriber-ID', $subscriber->id);
                     $headers->addTextHeader('Feedback-ID', "campaign-{$this->campaign->id}:subscriber-{$subscriber->id}:jowmail");
-                    $headers->addTextHeader('X-Mailer', 'Jowmail App v1');
+                    $headers->addTextHeader('X-Mailer', 'Jowmail.com');
                     $headers->addTextHeader('X-Using', 'Jowmail.com');
                 });
             }
