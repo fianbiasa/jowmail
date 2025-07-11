@@ -26,6 +26,7 @@ public function getFooterWidgets(): array
     return [
         CampaignChart::class,
         ClickOpenPie::class,
+        AccountWidget::class,
     ];
 }
 public function getWidgets(): array
