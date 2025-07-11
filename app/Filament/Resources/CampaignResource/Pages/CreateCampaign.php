@@ -13,6 +13,9 @@ class CreateCampaign extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
+        // Konversi newline ke <br>
+        $data['body'] = nl2br($data['body']);
+        
         $record = static::getModel()::create($data);
         $record->load('smtpAccount', 'emailList.subscribers');
         SendCampaignEmail::dispatch($record);
