@@ -79,8 +79,9 @@ public static function table(Table $table): Table
         TextColumn::make('click_rate')
             ->label('Click Rate')
             ->getStateUsing(function ($record) {
-                $total = $record->emailList?->subscribers()->count() ?: 1;
-                return number_format($record->clicks()->count() / $total * 100, 1) . '%';
+                $uniqueClickers = $record->clicks()->distinct('subscriber_id')->count(); // pakai field subscriber_id
+                $sent = $record->emailList?->subscribers()->count() ?: 1;
+                return number_format($uniqueClickers / $sent * 100, 1) . '%';
             }),
     ])
     ->actions([
