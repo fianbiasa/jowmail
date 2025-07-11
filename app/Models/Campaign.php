@@ -27,4 +27,16 @@ class Campaign extends Model
     {
         return $this->belongsTo(EmailList::class);
     }
+    // app/Models/Campaign.php
+
+public function opens()
+{
+    return $this->hasMany(\App\Models\CampaignOpen::class);
+}
+
+public function clicks()
+{
+    return $this->hasMany(\App\Models\CampaignClick::class);
+}
+
 }
