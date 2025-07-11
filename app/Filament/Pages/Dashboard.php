@@ -28,4 +28,13 @@ public function getFooterWidgets(): array
         ClickOpenPie::class,
     ];
 }
+public function getWidgets(): array
+{
+    return [
+        // Jangan masukkan \Filament\Widgets\FilamentInfoWidget::class
+        StatsOverview::class,
+        CampaignChart::class,
+        ClickOpenPie::class,
+    ];
+}
 }
