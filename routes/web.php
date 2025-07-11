@@ -23,3 +23,4 @@ Route::get('/tracking/open/{campaign}/{subscriber}.gif', [TrackingController::cl
 Route::get('/redirect.php', [TrackingController::class, 'redirect'])->name('tracking.click');
 Route::match(['get', 'post'], '/unsubscribe/{subscriber}', [TrackingController::class, 'unsubscribe'])->name('unsubscribe');
 Route::get('/redirect', [\App\Http\Controllers\TrackingController::class, 'redirect']);
+Route::get('/redirect', [TrackingController::class, 'redirect'])->name('tracking.redirect');

@@ -68,7 +68,7 @@ class SendCampaignEmail implements ShouldQueue
                     $originalUrl = $matches[1];
                     $encodedId = base64_encode(Str::random(10) . '.' . $subscriber->id . '.' . $this->campaign->id);
                     $encodedUrl = urlencode(base64_encode($originalUrl));
-                    $redirectUrl = url('/redirect.php') . '?id=' . $encodedId . '&ref=' . $encodedUrl;
+                    $redirectUrl = route('tracking.redirect', ['id' => $encodedId, 'ref' => $encodedUrl]);
                     return 'href="' . $redirectUrl . '"';
                 }, $body);
 
