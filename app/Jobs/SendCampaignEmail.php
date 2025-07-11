@@ -44,7 +44,8 @@ class SendCampaignEmail implements ShouldQueue
         ]);
 
         $subscribers = $this->campaign->emailList->subscribers;
-
+        $campaign = $this->campaign;
+        
         try {
             foreach ($subscribers as $subscriber) {
                 $trackingUrl = route('tracking.open', [$this->campaign->id, $subscriber->id]);
