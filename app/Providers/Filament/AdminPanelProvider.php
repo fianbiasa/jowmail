@@ -24,6 +24,9 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+            ->brandName('Jowmail v1.1.9.beta') // ⬅️ Tambahkan baris ini
+            ->favicon(asset('favicon.ico'))    // opsional
+            ->sidebarCollapsibleOnDesktop()
             ->id('admin')
             ->path('admin')
             ->login()
