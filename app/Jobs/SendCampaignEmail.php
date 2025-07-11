@@ -78,7 +78,6 @@ class SendCampaignEmail implements ShouldQueue
 
                 // Tambahkan link unsubscribe
                 $unsubscribeUrl = route('unsubscribe', $subscriber->id);
-                $body .= '<br><p style="font-size: 12px; color: gray;">To unsubscribe, <a href="' . $unsubscribeUrl . '">click here</a>.</p>';
 
                 // Render final HTML email
                 $html = view('emails.campaign', [
