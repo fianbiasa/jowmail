@@ -44,53 +44,53 @@ class CampaignResource extends Resource
         ]);
     }
 
-    public static function table(Table $table): Table
-    {
-        return $table->columns([
-            TextColumn::make('subject')->sortable()->searchable(),
-            TextColumn::make('smtpAccount.name')->label('SMTP'),
-            TextColumn::make('emailList.name')->label('Email List'),
+public static function table(Table $table): Table
+{
+    return $table->columns([
+        TextColumn::make('subject')->sortable()->searchable(),
+        TextColumn::make('smtpAccount.name')->label('SMTP'),
+        TextColumn::make('emailList.name')->label('Email List'),
 
-            BadgeColumn::make('status')->colors([
-                'success' => 'sent',
-                'danger' => 'failed',
-                'gray' => 'draft',
-            ]),
+        BadgeColumn::make('status')->colors([
+            'success' => 'sent',
+            'danger' => 'failed',
+            'gray' => 'draft',
+        ]),
 
-            // 📊 Statistik
-            TextColumn::make('emailList.subscribers_count')
-                ->label('Sent To')
-                ->counts('emailList.subscribers'),
+        TextColumn::make('sent_to')
+            ->label('Sent To')
+            ->getStateUsing(fn ($record) => $record->emailList?->subscribers()->count() ?? 0),
 
-            TextColumn::make('opens_count')
-                ->label('Opens')
-                ->getStateUsing(fn ($record) => $record->opens()->count()),
+        TextColumn::make('opens_count')
+            ->label('Opens')
+            ->getStateUsing(fn ($record) => $record->opens()->count()),
 
-            TextColumn::make('clicks_count')
-                ->label('Clicks')
-                ->getStateUsing(fn ($record) => $record->clicks()->count()),
+        TextColumn::make('clicks_count')
+            ->label('Clicks')
+            ->getStateUsing(fn ($record) => $record->clicks()->count()),
 
-            TextColumn::make('open_rate')
-                ->label('Open Rate')
-                ->getStateUsing(function ($record) {
-                    $total = $record->emailList?->subscribers()->count() ?: 1;
-                    return number_format($record->opens()->count() / $total * 100, 1) . '%';
-                }),
+        TextColumn::make('open_rate')
+            ->label('Open Rate')
+            ->getStateUsing(function ($record) {
+                $total = $record->emailList?->subscribers()->count() ?: 1;
+                return number_format($record->opens()->count() / $total * 100, 1) . '%';
+            }),
 
-            TextColumn::make('click_rate')
-                ->label('Click Rate')
-                ->getStateUsing(function ($record) {
-                    $total = $record->emailList?->subscribers()->count() ?: 1;
-                    return number_format($record->clicks()->count() / $total * 100, 1) . '%';
-                }),
-        ])
-        ->actions([
-            Tables\Actions\EditAction::make(),
-        ])
-        ->bulkActions([
-            Tables\Actions\DeleteBulkAction::make(),
-        ]);
-    }
+        TextColumn::make('click_rate')
+            ->label('Click Rate')
+            ->getStateUsing(function ($record) {
+                $total = $record->emailList?->subscribers()->count() ?: 1;
+                return number_format($record->clicks()->count() / $total * 100, 1) . '%';
+            }),
+    ])
+    ->actions([
+        Tables\Actions\EditAction::make(),
+    ])
+    ->bulkActions([
+        Tables\Actions\DeleteBulkAction::make(),
+    ]);
+}
+
 
     public static function getPages(): array
     {
