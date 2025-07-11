@@ -14,17 +14,18 @@ class Dashboard extends BaseDashboard
 {
     return false; // nonaktifkan menu dashboard default
 }
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            StatsOverview::class,
-        ];
-    }
-    protected function getFooterWidgets(): array
+public function getHeaderWidgets(): array
 {
     return [
-        ClickOpenPie::class,
+        StatsOverview::class,
+    ];
+}
+
+public function getFooterWidgets(): array
+{
+    return [
         CampaignChart::class,
+        ClickOpenPie::class,
     ];
 }
 }
