@@ -73,6 +73,13 @@ class SendCampaignEmail implements ShouldQueue
                     $msg->to($subscriber->email)
                         ->from($smtp->from_address, $smtp->from_name)
                         ->subject($subject);
+                        
+                        // ✅ Tambahkan custom headers di sini
+                        $msg->getHeaders()->addTextHeader('X-Campaign-ID', $campaign->id);
+                        $msg->getHeaders()->addTextHeader('X-Subscriber-ID', $subscriber->id);
+                        $msg->getHeaders()->addTextHeader('X-Virtual-MTA', 'mta-' . $smtp->id);
+                        $msg->getHeaders()->addTextHeader('Feedback-ID', 'campaign.' . $campaign->id . ':subscriber.' . $subscriber->id . ':jowmail');
+
                 });
             }
 
