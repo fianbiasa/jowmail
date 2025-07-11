@@ -70,21 +70,20 @@ class SendCampaignEmail implements ShouldQueue
                     'body' => $bodyWithPixel,
                 ])->render();
 
-                Mail::html($html, function ($msg) use ($subscriber, $smtp, $subject, $campaign) {
+                Mail::mailer('dynamic')->html($html, function ($msg) use ($subscriber, $smtp, $subject, $campaign) {
     $msg->to($subscriber->email)
         ->from($smtp->from_address, $smtp->from_name)
-        ->subject($subject)
-        ->withSymfonyMessage(function ($message) use ($campaign, $subscriber, $smtp) {
-            $headers = $message->getHeaders();
+        ->subject($subject);
 
-            $headers->addTextHeader('X-Campaign-ID', $campaign->id);
-            $headers->addTextHeader('X-Subscriber-ID', $subscriber->id);
-            $headers->addTextHeader('X-Virtual-MTA', 'mta-' . $smtp->id);
-            $headers->addTextHeader('Feedback-ID', "campaign-{$campaign->id}:subscriber-{$subscriber->id}:jowmail");
-            $headers->addTextHeader('X-Mailer', 'Jowmail App v1');
-            $headers->addTextHeader('X-Using', 'Jowmail.com');
-        });
+    // Inject SymfonyMessage untuk menambahkan custom header
+    $msg->getSymfonyMessage()->getHeaders()->addTextHeader('X-Campaign-ID', $campaign->id);
+    $msg->getSymfonyMessage()->getHeaders()->addTextHeader('X-Subscriber-ID', $subscriber->id);
+    $msg->getSymfonyMessage()->getHeaders()->addTextHeader('X-Virtual-MTA', 'mta-' . $smtp->id);
+    $msg->getSymfonyMessage()->getHeaders()->addTextHeader('Feedback-ID', "campaign-{$campaign->id}:subscriber-{$subscriber->id}:jowmail");
+    $msg->getSymfonyMessage()->getHeaders()->addTextHeader('X-Mailer', 'Jowmail App v1');
+    $msg->getSymfonyMessage()->getHeaders()->addTextHeader('X-Using', 'Jowmail.com');
 });
+
             }
 
             $this->campaign->update(['status' => 'sent']);
