@@ -12,14 +12,18 @@ return new class extends Migration
     public function up(): void
 {
     Schema::table('campaigns', function (Blueprint $table) {
-        $table->renameColumn('list_id', 'email_list_id');
+        if (Schema::hasColumn('campaigns', 'list_id')) {
+            $table->renameColumn('list_id', 'email_list_id');
+        }
     });
 }
 
 public function down(): void
 {
     Schema::table('campaigns', function (Blueprint $table) {
-        $table->renameColumn('email_list_id', 'list_id');
+        if (Schema::hasColumn('campaigns', 'email_list_id')) {
+            $table->renameColumn('email_list_id', 'list_id');
+        }
     });
 }
 };
