@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CampaignClick extends Model
 {
-    protected $fillable = ['campaign_id', 'subscriber_id', 'url'];
+    protected $fillable = ['campaign_id', 'subscriber_id', 'clicked_url'];
 
     public function campaign()
     {

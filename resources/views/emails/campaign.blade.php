@@ -52,7 +52,7 @@
           <!-- Copyright -->
           <tr>
             <td style="background-color:#f0f0f0;padding:15px;text-align:center;font-size:12px;color:#999999;">
-              &copy; {{ date('Y') }} JOW Aplikasi Masakini. All rights reserved.
+              &copy; {{ date('Y') }} JOW Aplikasi Masa kini. All rights reserved.
             </td>
           </tr>
         </table>
