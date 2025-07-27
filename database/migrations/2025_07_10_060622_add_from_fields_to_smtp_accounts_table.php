@@ -23,6 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('smtp_accounts', function (Blueprint $table) {
+            $table->dropColumn('from_name');
+            $table->dropColumn('from_address');
             //
         });
     }
